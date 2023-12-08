@@ -30,11 +30,8 @@ public class OrderRepository {
     }
 
     public ResponseEntity<String> addPartner(String partnerId){
-        if(!deliveryPartnerMap.containsKey(partnerId))
-        {
-            DeliveryPartner deliveryPartner=new DeliveryPartner(partnerId);
-            deliveryPartnerMap.put(partnerId,deliveryPartner);
-        }
+        DeliveryPartner deliveryPartner=new DeliveryPartner(partnerId);
+        deliveryPartnerMap.put(partnerId,deliveryPartner);
         return new ResponseEntity<>("New delivery partner added successfully", HttpStatus.CREATED);
     }
 
