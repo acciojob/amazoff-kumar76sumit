@@ -30,8 +30,11 @@ public class OrderRepository {
     }
 
     public ResponseEntity<String> addPartner(String partnerId){
-        DeliveryPartner deliveryPartner=new DeliveryPartner(partnerId);
-        deliveryPartnerMap.put(partnerId,deliveryPartner);
+        if(!deliveryPartnerMap.containsKey(partnerId))
+        {
+            DeliveryPartner deliveryPartner=new DeliveryPartner(partnerId);
+            deliveryPartnerMap.put(partnerId,deliveryPartner);
+        }
         return new ResponseEntity<>("New delivery partner added successfully", HttpStatus.CREATED);
     }
 
@@ -54,10 +57,17 @@ public class OrderRepository {
     }
 
     public ResponseEntity<DeliveryPartner> getPartnerById(String partnerId){
-        DeliveryPartner deliveryPartner = deliveryPartnerMap.get(partnerId);
-        //deliveryPartner should contain the value given by partnerId
-
-        return new ResponseEntity<>(deliveryPartner, HttpStatus.CREATED);
+//        DeliveryPartner deliveryPartner = deliveryPartnerMap.get(partnerId);
+//        //deliveryPartner should contain the value given by partnerId
+//
+//        return new ResponseEntity<>(deliveryPartner, HttpStatus.CREATED);
+        try {
+            DeliveryPartner deliveryPartner = deliveryPartnerMap.get(partnerId);
+            return new ResponseEntity<>(deliveryPartner, HttpStatus.CREATED);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<Integer> getOrderCountByPartnerId(String partnerId){
