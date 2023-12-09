@@ -57,17 +57,10 @@ public class OrderRepository {
     }
 
     public ResponseEntity<DeliveryPartner> getPartnerById(String partnerId){
-//        DeliveryPartner deliveryPartner = deliveryPartnerMap.get(partnerId);
-//        //deliveryPartner should contain the value given by partnerId
-//
-//        return new ResponseEntity<>(deliveryPartner, HttpStatus.CREATED);
-        try {
-            DeliveryPartner deliveryPartner = deliveryPartnerMap.get(partnerId);
-            return new ResponseEntity<>(deliveryPartner, HttpStatus.CREATED);
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        DeliveryPartner deliveryPartner = deliveryPartnerMap.get(partnerId);
+        //deliveryPartner should contain the value given by partnerId
+
+        return new ResponseEntity<>(deliveryPartner, HttpStatus.CREATED);
     }
 
     public ResponseEntity<Integer> getOrderCountByPartnerId(String partnerId){
@@ -99,13 +92,28 @@ public class OrderRepository {
 
     public ResponseEntity<Integer> getCountOfUnassignedOrders(){
         Integer countOfOrders = 0;
-        int totalAssignedOrders=0;
-        for(DeliveryPartner deliveryPartner:partnerOrderMap.keySet())
+//        int totalAssignedOrders=0;
+//        for(DeliveryPartner deliveryPartner:partnerOrderMap.keySet())
+//        {
+//            totalAssignedOrders+=partnerOrderMap.get(deliveryPartner).size();
+//        }
+//        int totalOrders=orderMap.size();
+//        countOfOrders=totalOrders-totalAssignedOrders;
+        for(String orderId:orderMap.keySet())
         {
-            totalAssignedOrders+=partnerOrderMap.get(deliveryPartner).size();
+            boolean isOrderAssigned=false;
+            for(DeliveryPartner deliveryPartner:partnerOrderMap.keySet())
+            {
+                if(partnerOrderMap.get(deliveryPartner).contains(orderMap.get(orderId)))
+                {
+                    isOrderAssigned=true;
+                }
+            }
+            if(!isOrderAssigned)
+            {
+                countOfOrders++;
+            }
         }
-        int totalOrders=orderMap.size();
-        countOfOrders=totalOrders-totalAssignedOrders;
         //Count of orders that have not been assigned to any DeliveryPartner
 
         return new ResponseEntity<>(countOfOrders, HttpStatus.CREATED);
